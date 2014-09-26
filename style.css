@@ -1,0 +1,16 @@
+@import url(http://fonts.googleapis.com/css?family=Raleway:400,200);
+body {
+  font-family: 'Raleway', sans-serif;
+}
+.gallery .item {
+  float: left;
+  width: 320px;
+  text-align: center;
+}
+.gallery .item img {
+  width: 100%;
+}
+.gallery .item p {
+  font-size: 0.5em;
+  margin-top: 0;
+}
