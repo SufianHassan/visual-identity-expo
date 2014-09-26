@@ -9,13 +9,21 @@ var Spinner = require('spin.js');
 
 var db = new Firebase('https://visual-identity.firebaseio.com/');
 
+var imagesRef = db.child('images');
+
+
+
 var gallery = document.querySelector('div.gallery');
 
 var main = document.querySelector('.main');
 
+var mainCanvas = document.querySelector('.main canvas');
+
+var ctx = mainCanvas.getContext('2d');
+
 var popup = $('#detail-modal');
 
-
+// SPINNER
 var opts = {
   lines: 13, // The number of lines to draw
   length: 20, // The length of each line
@@ -34,78 +42,130 @@ var opts = {
   top: '50%', // Top position relative to parent
   left: '50%' // Left position relative to parent
 };
-var target = document.querySelector('.spinhome');
-var spinner = new Spinner(opts).spin(target);
+var spinTarget = document.querySelector('.spinhome');
+var spinner = new Spinner(opts).spin(spinTarget);
+
+var imageStep = 5;
+
+var timesCalled = 0;
+
+var lastKey = null;
+var lastDate = new Date().getTime();
+
+var newImageQuery = imagesRef.endAt().limit(12);
+
+newImageQuery
+    .on('child_added', handleNewImage);
 
 
-db.child('images')
-    .on('child_added', function(newImage) {
+function renderImage(newImage) {
 
-        spinner.stop();
+    var img = newImage.val();
 
-        var img = newImage.val();
+    var timestamp = new Date(img.date).getTime();
 
-        var cont = document.createElement('div');
-        cont.classList.add('item');
-        cont.classList.add('details');
-        cont.id = newImage.name();
+    if (timestamp < lastDate) {
+        lastDate = timestamp;
+        lastKey = newImage.name();
+    }
+
+    var cont = document.createElement('div');
+    cont.classList.add('item');
+    cont.classList.add('details');
+    cont.id = newImage.name();
+
+    var imgEl = document.createElement('img');
+    imgEl.src = img.dataURI;
+
+    var pEl = document.createElement('p');
+    pEl.innerHTML = img.date || "";
+
+    cont.appendChild(imgEl);
+    cont.appendChild(pEl);
+
+    cont.onclick = function() {
+
+        var anchor = document.createElement('a');
+        anchor.href = img.dataURI;
+        anchor.download = cont.id + '.png';
 
         var imgEl = document.createElement('img');
         imgEl.src = img.dataURI;
+        anchor.appendChild(imgEl);
 
-        var pEl = document.createElement('p');
-        pEl.innerHTML = img.date || "";
+        $('#detail-modal .image').html(anchor);
 
-        cont.appendChild(imgEl);
-        cont.appendChild(pEl);
+        $.magnificPopup.open({
+            items : {
+                type: 'inline',
+                src: '#detail-modal',
+            },
+            modal: true
+        });
 
-        cont.onclick = function() {
+        $(document).on('click', '.popup-modal-dismiss', function (e) {
+            e.preventDefault();
+            $.magnificPopup.close();
+        });
 
+    }
 
-
-            var anchor = document.createElement('a');
-            anchor.href = img.dataURI;
-            anchor.download = cont.id + '.png';
-
-            var imgEl = document.createElement('img');
-            imgEl.src = img.dataURI;
-            anchor.appendChild(imgEl);
-
-            $('#detail-modal .image').html(anchor);
-
-            $.magnificPopup.open({
-                items : {
-                    type: 'inline',
-                    src: '#detail-modal',
-                },
-                modal: true
-            });
-
-            $(document).on('click', '.popup-modal-dismiss', function (e) {
-                e.preventDefault();
-                $.magnificPopup.close();
-            });
-
-        }
+    return cont;
+}
 
 
+function getMoreImages() {
 
-        gallery.insertBefore(cont, main.nextSibling);
+    console.log(new Date(lastDate), lastKey);
 
-    });
+    var moreImagesQuery = imagesRef.endAt(null, lastKey).limit(imageStep);
 
-db.child('images')
-    .on('child_removed', function(removedImage) {
-        var el = document.querySelector('div.item#' + removedImage.name());
+    moreImagesQuery.on('child_added', handleScrolledImage);
+}
 
-        if (el) {
-            el.parentNode.removeChild(el);
-        }
-    });
+// load more images when we reach the bottom
+$('.loadMore').click(function() {
 
-var mainCanvas = document.querySelector('.main canvas');
+    spinner = new Spinner(opts).spin(spinTarget);
 
-var ctx = mainCanvas.getContext('2d');
+    getMoreImages();
+});
+
+
+function handleScrolledImage(newImage) {
+    spinner.stop();
+
+    if (newImage.name() === lastKey) {
+        console.log('chucking it away');
+        return;
+    }
+
+    var cont = renderImage(newImage);
+
+    gallery.appendChild(cont);
+
+}
+
+
+function handleNewImage(newImage) {
+    spinner.stop();
+
+    var cont = renderImage(newImage);
+
+    gallery.insertBefore(cont, main.nextSibling);
+
+    $('div.buttons').removeClass('mfp-hide');
+
+}
+
+
+function handleRemovedImage(removedImage) {
+    var el = document.querySelector('div.item#' + removedImage.name());
+
+    if (el) {
+        el.parentNode.removeChild(el);
+    }
+}
 
 
 
