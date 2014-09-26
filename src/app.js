@@ -109,21 +109,49 @@ var ctx = mainCanvas.getContext('2d');
 
 
 
-
-
 db.child('current').on('value', function(newValue) {
-    var frame = newValue.val();
 
-    if (!frame) {
+    var data = newValue.val();
+
+    if (!data) {
         return;
     }
 
-    var image = document.createElement('img');
-
-    image.onload = function() {
-        ctx.drawImage(image, 0, 0);
+    if (data.clear) {
+        ctx.clearRect(0, 0, data.w, data.h);
+        return;
     }
 
-    image.src = frame.dataURI;
+    if (!data.points) {
+        return;
+    }
+
+    ctx.rect(0, 0, data.w, data.h);
+    ctx.fillStyle = "rgba(255, 255, 255, " + data.bgAlpha + ")";
+    ctx.fill();
+
+    ctx.save();
+    ctx.translate(data.w/2, data.w/2);
+    ctx.beginPath();
+    // draw three points
+    var p = data.points[0];
+
+    // ctx.moveTo(p[0], p[1]);
+
+    for (var i = 0; i < data.points.length; i++) {
+        p = data.points[i];
+        ctx.lineTo(p[0], p[1]);
+    }
+
+    ctx.closePath();
+
+    ctx.fillStyle = "hsla(" + data.hue + ", 100%, 50%, " + data.inkAlpha + ")";
+
+    ctx.fill();
+
+    ctx.restore();
+
+
 
 })
+
