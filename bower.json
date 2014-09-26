@@ -1,6 +1,7 @@
 {
   "name": "visual-identity-expo",
   "version": "0.0.0",
-  "dependencies": {}
+  "dependencies": {
+    "firebase": "~1.0.24"
+  }
 }
-
