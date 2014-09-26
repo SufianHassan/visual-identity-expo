@@ -4,6 +4,9 @@ var db = new Firebase('https://visual-identity.firebaseio.com/');
 
 var gallery = document.querySelector('div.gallery');
 
+var main = document.querySelector('.main');
+
+
 db.child('images').on('child_added', function(newImage) {
 
     var img = newImage.val();
@@ -20,6 +23,28 @@ db.child('images').on('child_added', function(newImage) {
     cont.appendChild(imgEl);
     cont.appendChild(pEl);
 
-    gallery.insertBefore(cont, gallery.firstChild);
+    gallery.insertBefore(cont, main.nextSibling);
 
 });
+
+var mainCanvas = document.querySelector('.main canvas');
+
+var ctx = mainCanvas.getContext('2d');
+
+
+db.child('current').on('value', function(newValue) {
+    var frame = newValue.val();
+
+    if (!frame) {
+        return;
+    }
+
+    var image = document.createElement('img');
+
+    image.onload = function() {
+        ctx.drawImage(image, 0, 0);
+    }
+
+    image.src = frame.dataURI;
+
+})
