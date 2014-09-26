@@ -2,10 +2,14 @@
 body {
   font-family: 'Raleway', sans-serif;
 }
+.gallery {
+  display: inline-block;
+}
 .gallery .item {
   box-sizing: border-box;
   float: left;
   width: 320px;
+  margin: 0 auto;
   text-align: center;
 }
 .gallery .item img {
@@ -27,6 +31,11 @@ body {
 }
 p.buttons {
   text-align: right;
+}
+div.buttons {
+  width: 100%;
+  text-align: center;
+  margin: 120px 0;
 }
 .spinhome {
   width: 300px;
