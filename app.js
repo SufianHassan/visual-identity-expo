@@ -169,25 +169,36 @@ var gallery = document.querySelector('div.gallery');
 var main = document.querySelector('.main');
 
 
-db.child('images').on('child_added', function(newImage) {
+db.child('images')
+    .on('child_added', function(newImage) {
 
-    var img = newImage.val();
+        var img = newImage.val();
 
-    var cont = document.createElement('div');
-    cont.classList.add('item');
+        var cont = document.createElement('div');
+        cont.classList.add('item');
+        cont.id = newImage.name();
 
-    var imgEl = document.createElement('img');
-    imgEl.src = img.dataURI;
+        var imgEl = document.createElement('img');
+        imgEl.src = img.dataURI;
 
-    var pEl = document.createElement('p');
-    pEl.innerHTML = img.date || "";
+        var pEl = document.createElement('p');
+        pEl.innerHTML = img.date || "";
 
-    cont.appendChild(imgEl);
-    cont.appendChild(pEl);
+        cont.appendChild(imgEl);
+        cont.appendChild(pEl);
 
-    gallery.insertBefore(cont, main.nextSibling);
+        gallery.insertBefore(cont, main.nextSibling);
 
-});
+    });
+
+db.child('images')
+    .on('child_removed', function(removedImage) {
+        var el = document.querySelector('div.item#' + removedImage.name());
+
+        if (el) {
+            el.parentNode.removeChild(el);
+        }
+    });
 
 var mainCanvas = document.querySelector('.main canvas');
 
