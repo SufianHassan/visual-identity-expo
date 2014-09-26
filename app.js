@@ -11862,12 +11862,16 @@ db.child('current').on('value', function(newValue) {
     var data = newValue.val();
 
     if (!data) {
+        $(main).hide();
         return;
     }
 
     if (data.clear) {
         ctx.clearRect(0, 0, data.w, data.h);
+        $(main).hide();
         return;
+    } else {
+        $(main).show();
     }
 
     if (!data.points) {
