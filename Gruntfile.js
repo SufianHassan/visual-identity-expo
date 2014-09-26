@@ -34,7 +34,7 @@ module.exports = function(grunt) {
 
     less: {
       all: {
-        src: 'styles/**/*.less',
+        src: 'styles/**/style.less',
         dest: 'dist/style.css'
       }
     },
@@ -42,6 +42,7 @@ module.exports = function(grunt) {
     connect: {
       options: {
         port: process.env.PORT || 3131,
+        hostname: "*",
         base: 'dist/',
       },
 

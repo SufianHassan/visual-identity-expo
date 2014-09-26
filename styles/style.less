@@ -8,6 +8,7 @@ body {
 .gallery {
 
     .item {
+        box-sizing: border-box;
         float:left;
         width: 320px;
 
@@ -26,6 +27,21 @@ body {
             width: 640px;
         }
 
+
+        &.details {
+            border: 1px solid rgba(20, 20, 20, 0);
+            cursor: pointer;
+            &:hover {
+                border: 1px solid rgba(20, 20, 20, 0.2);
+            }
+        }
     }
 
 }
+
+p.buttons {
+    text-align: right;
+}
+
+@import "button";
+@import "popup";
