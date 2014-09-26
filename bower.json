@@ -4,6 +4,7 @@
   "dependencies": {
     "firebase": "~1.0.24",
     "jquery": "~2.1.1",
-    "magnific-popup": "~0.9.9"
+    "magnific-popup": "~0.9.9",
+    "spin.js": "~2.0.1"
   }
 }
