@@ -77,10 +77,13 @@ function renderImage(newImage) {
     var imgEl = document.createElement('img');
     imgEl.src = img.dataURI;
 
+    var nameEl = document.createElement('p');
+    nameEl.innerHTML = img.title || 'untitled';
     var pEl = document.createElement('p');
     pEl.innerHTML = img.date || "";
 
     cont.appendChild(imgEl);
+    cont.appendChild(nameEl);
     cont.appendChild(pEl);
 
     cont.onclick = function() {
