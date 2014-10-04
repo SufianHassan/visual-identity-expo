@@ -11761,7 +11761,7 @@ var imagesRef = db.child('images');
 
 
 
-var gallery = document.querySelector('div.gallery');
+var gallery = document.querySelector('div.gallery .items');
 
 var main = document.querySelector('.main');
 
