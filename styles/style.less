@@ -5,9 +5,46 @@ body {
 }
 
 
+.container {
+   display: table;
+   width: 100%;
+}
+.gallery {
+   display: table-cell;
+   text-align: center;
+   vertical-align: middle;
+
+}
+
+
+.items {
+   @media only screen and (min-width : 768px) {
+    width : 640px;
+    }
+
+
+    @media only screen and (min-width : 1024px) {
+        width : (320px * 3);
+    }
+
+    @media only screen and (min-width : 1280px) {
+        width : (320px * 4);
+    }
+
+    @media only screen and (min-width : 1900px) {
+        width : (320px * 5);
+    }
+
+    width : 100%;
+    height: 100%;
+    margin: 0 auto;
+}
+
+
+
 .gallery {
 
-    display: inline-block;
+    // display: inline-block;
 
     .item {
         box-sizing: border-box;
